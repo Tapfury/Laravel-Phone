@@ -58,6 +58,17 @@ class PhoneValidator
     protected $types = [];
 
     /**
+     * Use isPossibleNumber instead of isValidNumber
+     *
+     * @var array
+     */
+    protected $possible = false;
+
+
+
+
+
+    /**
      * PhoneValidator constructor.
      */
     public function __construct(PhoneNumberUtil $lib)
@@ -118,6 +129,8 @@ class PhoneValidator
                 $this->countries[] = strtoupper($parameter);
             } elseif ($parameter == 'AUTO') {
                 $this->autodetect = true;
+            } elseif ($parameter == 'POSSIBLE') {
+                $this->possible = true;
             } elseif ($parameter == 'LENIENT') {
                 $this->lenient = true;
             } // Lastly check if it is an input field containing the country.
@@ -180,6 +193,10 @@ class PhoneValidator
                     // Automatic detection:
                     if ($this->autodetect) {
                         // Validate if the international phone number is valid for its contained country.
+                        if ($this->possible) {
+                            return $this->lib->isPossibleNumber($phoneNumber);
+                        }
+
                         return $this->lib->isValidNumber($phoneNumber);
                     }
 
